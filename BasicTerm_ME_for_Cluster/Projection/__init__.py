@@ -446,7 +446,6 @@ def model_point():
     mp = model_point_table.copy()
     mp['policy_count'] = 1
     return mp
-    # return model_point_cluster
 
 
 def mort_rate(t):
@@ -949,20 +948,20 @@ def net_cf_annual():
 # ---------------------------------------------------------------------------
 # References
 
-disc_rate_ann = ("IOSpec", 2399056562400, 2399056560720)
+disc_rate_ann = ("IOSpec", 2632242246512, 2632234568288)
 
-mort_table = ("IOSpec", 2399063194160, 2399055125760)
+mort_table = ("IOSpec", 2632242872624, 2632242246560)
 
 np = ("Module", "numpy")
 
 pd = ("Module", "pandas")
 
-model_point_table = ("IOSpec", 2399061084432, 2399063193536)
+premium_table = ("IOSpec", 2632236158496, 2632242690368)
 
-premium_table = ("IOSpec", 2399063227408, 2399063056496)
+model_point_cluster = ("IOSpec", 2632242805200, 2632236155952)
+
+model_point_table = ("IOSpec", 2632243556800, 2632242724336)
 
 mort_rate_mult = 1
 
-lapse_rate_mult = 1.5
-
-model_point_cluster = ("IOSpec", 2399149796032, 2399063921040)
+lapse_rate_mult = 1
