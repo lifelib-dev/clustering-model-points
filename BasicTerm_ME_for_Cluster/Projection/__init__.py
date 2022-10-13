@@ -184,7 +184,7 @@ Attributes:
 
 from modelx.serialize.jsonvalues import *
 
-_formula = None
+_formula = lambda lapse_rate_mult=1, mort_rate_mult=1: None
 
 _bases = []
 
@@ -284,7 +284,7 @@ def disc_rate_mth():
         :func:`disc_rate_ann`
 
     """
-    return np.array(list((1 + disc_rate_ann[t//12])**(1/12) - 1 for t in range(max_proj_len())))
+    return np.array(list((1 + disc_rate_ann)**(1/12) - 1 for t in range(max_proj_len())))
 
 
 def duration(t):
@@ -385,7 +385,7 @@ def lapse_rate(t):
         :func:`duration`
 
     """
-    return lapse_rate_mult * np.maximum(0.1 - 0.02 * duration(t), 0.02)
+    return lapse_rate_mult * np.maximum(0.2 - 0.02 * duration(t), 0.02)
 
 
 def loading_prem():
@@ -443,9 +443,7 @@ def model_point():
 
     Be careful not to accidentally change the original table.
     """
-    mp = model_point_table.copy()
-    mp['policy_count'] = 1
-    return mp
+    return model_point_table
 
 
 def mort_rate(t):
@@ -906,11 +904,11 @@ def result_pv():
 
 
     data = {
-        "PV Premiums": pv_premiums(),
-        "PV Claims": pv_claims(),
-        "PV Expenses": pv_expenses(),
-        "PV Commissions": pv_commissions(),
-        "PV Net Cashflow": pv_net_cf()
+        "pv_premiums": pv_premiums(),
+        "pv_claims": pv_claims(),
+        "pv_expenses": pv_expenses(),
+        "pv_commissions": pv_commissions(),
+        "pv_net_cf": pv_net_cf()
     }
 
     return pd.DataFrame(data, index=model_point().index)
@@ -945,10 +943,19 @@ def net_cf_annual():
     return pd.DataFrame(data, index=model_point().index)
 
 
+def cf_annual(name):
+
+    cf = getattr(_space, name)
+
+    data = {}
+    for m in range(0, max_proj_len(), 12):
+        data[int(m/12)] = sum([cf(t) for t in range(m, min(m+12, max_proj_len()))])
+
+    return pd.DataFrame(data, index=model_point().index)
+
+
 # ---------------------------------------------------------------------------
 # References
-
-disc_rate_ann = ("IOSpec", 2632242246512, 2632234568288)
 
 mort_table = ("IOSpec", 2632242872624, 2632242246560)
 
@@ -965,3 +972,5 @@ model_point_table = ("IOSpec", 2632243556800, 2632242724336)
 mort_rate_mult = 1
 
 lapse_rate_mult = 1
+
+disc_rate_ann = 0.03
